@@ -1,3 +1,7 @@
 {
-  "rewrites": [{ "source": "/wuza/:path*", "destination": "/:path*" }]
+  "rewrites": [
+    { "source": "/wuza", "destination": "/index.html" },
+    { "source": "/wuza/", "destination": "/index.html" },
+    { "source": "/wuza/:path*", "destination": "/:path*" }
+  ]
 }
