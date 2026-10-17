@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react'
 import { Trash2 } from 'lucide-react'
+import { useI18n } from '@/lib/i18n'
 
 const REVEAL = 88 // width of the Delete button behind the card
 
@@ -11,6 +12,7 @@ export function SwipeCard({ onDelete, children }: { onDelete: () => void; childr
   const ref = useRef<HTMLDivElement>(null)
   const gesture = useRef<{ x: number; y: number; base: number; mode: 'none' | 'x' | 'y' } | null>(null)
   const swallowClick = useRef(false)
+  const { t } = useI18n()
 
   const remove = () => {
     setOffset(-(ref.current?.offsetWidth ?? 400))
@@ -19,14 +21,14 @@ export function SwipeCard({ onDelete, children }: { onDelete: () => void; childr
 
   return (
     <div ref={ref} className="relative touch-pan-y overflow-hidden rounded-2xl">
-      <div className="absolute inset-0 flex justify-end rounded-2xl bg-destructive">
+      <div dir="ltr" className="absolute inset-0 flex justify-end rounded-2xl bg-destructive">
         <button
-          aria-label="Delete appliance"
+          aria-label={t.deleteAppliance}
           className="flex items-center justify-center gap-1 text-sm font-medium text-white"
           style={{ width: REVEAL }}
           onClick={remove}
         >
-          <Trash2 className="size-4" /> Delete
+          <Trash2 className="size-4" /> {t.delete}
         </button>
       </div>
       <div

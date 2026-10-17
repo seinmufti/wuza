@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Appliances } from '@/components/Appliances'
 import { Hero } from '@/components/Hero'
+import { LanguagePicker } from '@/components/LanguagePicker'
 import { SettingsPanel } from '@/components/Settings'
 import { Sunlight } from '@/components/Sunlight'
 import { calculate, DEFAULT_SETTINGS, migrateAppliance,
@@ -24,8 +25,9 @@ export default function App() {
   return (
     <div className="flex min-h-svh justify-center bg-neutral-200">
       <div className="relative flex h-svh w-full flex-col overflow-hidden bg-background sm:w-[430px] sm:border-x sm:shadow-lg">
-        <header className="px-5 pt-5 pb-3">
+        <header className="flex items-center justify-between px-5 pt-5 pb-3">
           <h1 className="text-xl font-bold">Wuza</h1>
+          <LanguagePicker />
         </header>
         <main className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 pb-6">
           <Hero r={results} usage={usageHours(items, settings)} />
