@@ -20,9 +20,10 @@ export default function App() {
 
   const results = useMemo(() => calculate(items, settings), [items, settings])
 
+  // On wider screens: a plain phone-width column, full height, centered (no device bezel).
   return (
-    <div className="flex min-h-svh items-center justify-center bg-neutral-200 sm:p-6">
-      <div className="relative flex h-svh w-full flex-col overflow-hidden bg-background sm:h-[844px] sm:max-h-[calc(100svh-3rem)] sm:w-[390px] sm:rounded-[2.5rem] sm:border-[8px] sm:border-neutral-900 sm:shadow-2xl">
+    <div className="flex min-h-svh justify-center bg-neutral-200">
+      <div className="relative flex h-svh w-full flex-col overflow-hidden bg-background sm:w-[430px] sm:border-x sm:shadow-lg">
         <header className="px-5 pt-5 pb-3">
           <h1 className="text-xl font-bold">Wuza</h1>
         </header>
