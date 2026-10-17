@@ -41,12 +41,13 @@ export function LanguagePicker() {
             title={label}
             onClick={() => choose(code)}
             className={cn(
-              'flex w-full items-center justify-between rounded-lg px-3 py-3 hover:bg-muted',
+              'relative flex w-full items-center justify-center rounded-lg px-3 py-3 hover:bg-muted',
               lang === code && 'bg-muted/60',
             )}
           >
             <Flag lang={code} className="h-10 w-15 rounded-[5px] shadow-[0_0_0_1px_rgb(0_0_0/0.1)]" />
-            {lang === code ? <Check className="size-6" /> : <span className="size-6" />}
+            {/* Flag stays centered; the check sits at the edge without pushing it. */}
+            {lang === code && <Check className="absolute end-3 size-6" />}
           </button>
         ))}
       </PopoverContent>
