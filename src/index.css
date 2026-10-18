@@ -145,4 +145,6 @@
 /* The page scrolls; stop the browser shifting it while dropdowns animate. */
 html {
   overflow-anchor: none;
+  /* Always reserve the scrollbar's space so switching to a short page doesn't widen the layout. */
+  scrollbar-gutter: stable;
 }

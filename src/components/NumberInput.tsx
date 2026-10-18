@@ -9,6 +9,8 @@ export function NumberInput({
   allowZero = false,
   className,
   integer = false,
+  placeholder,
+  onClear,
 }: {
   value: number
   onChange: (n: number) => void
@@ -16,9 +18,14 @@ export function NumberInput({
   className?: string
   /** Whole numbers only: shows the numeric keypad (no decimal point) on phones. */
   integer?: boolean
+  /** When set, a value of 0 shows as an empty field with this hint. */
+  placeholder?: string
+  /** Called when the field is left empty, instead of restoring the last value. */
+  onClear?: () => void
 }) {
   const [text, setText] = useState(String(value))
   const [focused, setFocused] = useState(false)
+  const shown = (n: number) => (placeholder !== undefined && n === 0 ? '' : String(n))
   const valid = (n: number) => Number.isFinite(n) && (allowZero ? n >= 0 : n > 0)
 
   return (
@@ -26,9 +33,10 @@ export function NumberInput({
       className={className}
       type="text"
       inputMode={integer ? 'numeric' : 'decimal'}
-      value={focused ? text : String(value)}
+      placeholder={placeholder}
+      value={focused ? text : shown(value)}
       onFocus={() => {
-        setText(String(value))
+        setText(shown(value))
         setFocused(true)
       }}
       onChange={(e) => {
@@ -36,7 +44,10 @@ export function NumberInput({
         const n = Number(e.target.value)
         if (e.target.value.trim() !== '' && valid(n)) onChange(n)
       }}
-      onBlur={() => setFocused(false)}
+      onBlur={() => {
+        setFocused(false)
+        if (text.trim() === '') onClear?.()
+      }}
     />
   )
 }

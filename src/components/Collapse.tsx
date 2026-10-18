@@ -55,7 +55,8 @@ export function Collapse({ open, center = false, children }: { open: boolean; ce
     if (open && scroller && card) {
       const c = card.getBoundingClientRect()
       const headerBottom = document.querySelector('header')?.getBoundingClientRect().bottom ?? 0
-      const v = { top: headerBottom, bottom: window.innerHeight }
+      const navTop = document.querySelector('[data-bottom-nav]')?.getBoundingClientRect().top ?? window.innerHeight
+      const v = { top: headerBottom, bottom: navTop }
       const room = 8
       const toHeader = c.top - v.top - room
       if (center) {

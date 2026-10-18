@@ -6,7 +6,7 @@ const REVEAL = 88 // width of the Delete button behind the card
 
 // Swipe left to reveal Delete; swipe most of the way to delete at once.
 // Gestures starting inside [data-no-swipe] (e.g. sliders) are ignored, and vertical drags scroll.
-export function SwipeCard({ onDelete, children }: { onDelete: () => void; children: ReactNode }) {
+export function SwipeCard({ onDelete, label, children }: { onDelete: () => void; label?: string; children: ReactNode }) {
   const [offset, setOffset] = useState(0)
   const [dragging, setDragging] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -23,7 +23,7 @@ export function SwipeCard({ onDelete, children }: { onDelete: () => void; childr
     <div ref={ref} className="relative touch-pan-y overflow-hidden rounded-2xl">
       <div dir="ltr" className="absolute inset-0 flex justify-end rounded-2xl bg-destructive">
         <button
-          aria-label={t.deleteAppliance}
+          aria-label={label ?? t.deleteAppliance}
           className="flex items-center justify-center gap-1 text-sm font-medium text-white"
           style={{ width: REVEAL }}
           onClick={remove}
