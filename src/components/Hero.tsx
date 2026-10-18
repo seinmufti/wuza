@@ -17,7 +17,7 @@ function Stat({
   label: string
   value: number
   unit: string
-  sub: string
+  sub: ReactNode
   className: string
   bodyClassName: string
 }) {
@@ -88,7 +88,15 @@ export function Hero({ r, usage }: { r: Results; usage: { day: number; night: nu
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <Stat className="bg-amber-300" bodyClassName="bg-amber-300/20" icon={<Sun className="size-3.5" />} label={t.solar} value={r.solarKw} unit="kW" sub={t.panels(r.panelCount)} />
+        <Stat className="bg-amber-300" bodyClassName="bg-amber-300/20" icon={<Sun className="size-3.5" />} label={t.solar} value={r.solarKw} unit="kW" sub={
+            <>
+              {t.panels(r.panelCount)}
+              <span className="block">
+                <bdi dir="ltr">{r.panelAreaM2.toFixed(1)} m²</bdi>
+              </span>
+            </>
+          }
+        />
         <Stat className="bg-neutral-200" bodyClassName="bg-neutral-200/20" icon={<Zap className="size-3.5" />} label={t.inverter} value={r.inverterKw} unit="kW" sub="" />
         <Stat className="bg-indigo-400" bodyClassName="bg-indigo-400/20" icon={<Battery className="size-3.5" />} label={t.battery} value={r.batteryKwh} unit="kWh" sub="" />
       </div>

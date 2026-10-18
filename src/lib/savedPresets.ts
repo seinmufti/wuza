@@ -21,6 +21,8 @@ export const PRESET_HOME: SavedHome[] = [
       sunset: 18,
       location: null,
       panelWatts: 640,
+      panelLength: 2.382,
+      panelWidth: 1.134,
       dod: 0.9,
       batteryEff: 0.95,
       inverterEff: 0.92,

@@ -31,6 +31,8 @@ export function SettingsPanel({ value, onChange }: { value: Settings; onChange: 
           <div className="grid grid-cols-3 gap-2 border-t p-3">
             <Column icon={<Sun className="size-4 text-amber-500" />} title={t.solar}>
               <Field label={t.panelW} info={t.panelWInfo} value={value.panelWatts} defaultValue={DEFAULT_SETTINGS.panelWatts} onChange={(v) => num('panelWatts', v)} />
+              <Field label={t.panelLength} info={t.panelSizeInfo} value={value.panelLength} defaultValue={DEFAULT_SETTINGS.panelLength} onChange={(v) => num('panelLength', v)} />
+              <Field label={t.panelWidth} info={t.panelSizeInfo} value={value.panelWidth} defaultValue={DEFAULT_SETTINGS.panelWidth} onChange={(v) => num('panelWidth', v)} />
               <Field label={t.derate} info={t.derateInfo} value={Math.round(value.derate * 100)} defaultValue={Math.round(DEFAULT_SETTINGS.derate * 100)} onChange={(v) => num('derate', v, 100)} />
             </Column>
             <Column icon={<Battery className="size-4 text-emerald-600" />} title={t.battery}>

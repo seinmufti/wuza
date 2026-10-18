@@ -81,6 +81,9 @@ export interface Settings {
   sunset: number
   location: Place | null
   panelWatts: number
+  /** Size of one panel in metres, for the roof area. */
+  panelLength: number
+  panelWidth: number
   dod: number
   batteryEff: number
   inverterEff: number
@@ -93,6 +96,8 @@ export const DEFAULT_SETTINGS: Settings = {
   sunset: 18,
   location: null,
   panelWatts: 640,
+  panelLength: 2.382,
+  panelWidth: 1.134,
   dod: 0.9,
   batteryEff: 0.95,
   inverterEff: 0.92,
@@ -122,6 +127,8 @@ export interface Results {
   batteryKwh: number
   solarKw: number
   panelCount: number
+  /** Roof area the panels themselves cover (m²). */
+  panelAreaM2: number
   systemVolts: 12 | 24 | 48
 }
 
@@ -148,5 +155,6 @@ export function calculate(appliances: Appliance[], s: Settings): Results {
   const solarKw = psh > 0 ? dailyNeedKwh / (psh * s.derate) : 0
   const panelCount = solarKw > 0 ? Math.ceil((solarKw * 1000) / s.panelWatts) : 0
   const systemVolts = inverterKw <= 1.5 ? 12 : inverterKw <= 3 ? 24 : 48
-  return { dayWh, nightWh, peakW, inverterKw, batteryKwh, solarKw, panelCount, systemVolts }
+  const panelAreaM2 = panelCount * s.panelLength * s.panelWidth
+  return { dayWh, nightWh, peakW, inverterKw, batteryKwh, solarKw, panelCount, panelAreaM2, systemVolts }
 }
