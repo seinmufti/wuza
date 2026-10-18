@@ -7,7 +7,7 @@ import { NumberInput } from '@/components/NumberInput'
 import { SwipeCard } from '@/components/SwipeCard'
 import { Collapse } from '@/components/Collapse'
 import { ScrollArea } from '@/components/ScrollArea'
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { APPLIANCE_ICONS, PRESETS, type ApplianceIcon } from '@/lib/presets'
 import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
@@ -54,6 +54,7 @@ export function Appliances({
 
   // Add starts from a preset (or "Other" with no name); details are editable in the card that opens.
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [confirmClear, setConfirmClear] = useState(false)
   const add = (preset?: (typeof PRESETS)[number]) => {
     const a: Appliance = {
       id: newId(),
@@ -93,9 +94,7 @@ export function Appliances({
               aria-label={t.deleteAll}
               title={t.deleteAll}
               className="size-10 bg-white/15 text-white hover:bg-white/25"
-              onClick={() => {
-                if (window.confirm(t.deleteAllConfirm(items.length))) onChange([])
-              }}
+              onClick={() => setConfirmClear(true)}
             >
               <RotateCcw className="size-5" />
             </Button>
@@ -290,6 +289,29 @@ export function Appliances({
                   <span className="block text-xs text-neutral-500">{t.otherHint}</span>
                 </span>
               </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* In-app confirmation (the browser's confirm() pop-up is blocked in some views). */}
+      <Dialog open={confirmClear} onOpenChange={setConfirmClear}>
+        <DialogContent showCloseButton={false} className="max-w-[calc(100%-2rem)] gap-3 rounded-3xl p-5 sm:max-w-[360px]">
+          <DialogTitle className="text-lg font-semibold">{t.deleteAll}</DialogTitle>
+          <DialogDescription className="text-base text-neutral-600">{t.deleteAllConfirm(items.length)}</DialogDescription>
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Button variant="outline" className="h-11" onClick={() => setConfirmClear(false)}>
+              {t.cancel}
+            </Button>
+            <Button
+              variant="destructive"
+              className="h-11"
+              onClick={() => {
+                onChange([])
+                setConfirmClear(false)
+              }}
+            >
+              <Trash2 /> {t.delete}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
