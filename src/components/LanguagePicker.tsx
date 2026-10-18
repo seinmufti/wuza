@@ -29,9 +29,9 @@ export function LanguagePicker() {
     >
       <PopoverTrigger
         aria-label={t.language}
-        className="flex size-9 items-center justify-center rounded-full text-foreground hover:bg-muted"
+        className="flex size-10 items-center justify-center rounded-full text-foreground hover:bg-muted"
       >
-        <Globe className="size-5" />
+        <Globe className="size-6" />
       </PopoverTrigger>
       <PopoverContent align="end" className="w-56 gap-1 p-2">
         {LANGUAGES.map(({ code, label }) => (

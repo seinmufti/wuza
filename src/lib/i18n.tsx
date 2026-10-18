@@ -60,7 +60,7 @@ const en = {
     'Extra headroom so the inverter never runs at its limit. 1.25 means 25% bigger than all your appliances together.',
   surge: 'Surge (x)',
   surgeInfo:
-    'Fridges, ACs and pumps pull 3-5x their power for a moment when starting. Raise to 2-3 if you have big motors.',
+    'Start-up power as a multiple of running watts. Leave at 1 for lights, TVs and heaters. Fridges, ACs and pumps pull 3-5x for a moment when starting.',
   resetDefaults: 'Reset to defaults',
   moreInfo: 'More info',
 
@@ -80,6 +80,26 @@ const en = {
   delete: 'Delete',
   deleteAppliance: 'Delete appliance',
   language: 'Language',
+  chooseAppliance: 'Add an appliance',
+  day: 'Day',
+  night: 'Night',
+  deleteAll: 'Delete all appliances',
+  deleteAllConfirm: (n: number) => `Delete all ${n} appliances? This can't be undone.`,
+  other: 'Other',
+  otherHint: 'Name it yourself',
+  surgeShort: 'surge',
+  presetNames: {
+    fridge: 'Fridge',
+    ac: 'Air conditioner',
+    tv: 'TV',
+    light: 'LED light',
+    washer: 'Washing machine',
+    pump: 'Water pump',
+    fan: 'Fan',
+    heater: 'Electric heater',
+    laptop: 'Laptop',
+    microwave: 'Microwave',
+  } as Record<string, string>,
 }
 
 export type Strings = typeof en
@@ -122,7 +142,7 @@ const ar: Strings = {
   margin: 'الهامش (×)',
   marginInfo: 'هامش إضافي حتى لا يعمل الإنفرتر عند أقصى حده. 1.25 يعني أكبر بـ25% من مجموع أجهزتك.',
   surge: 'تيار البدء (×)',
-  surgeInfo: 'الثلاجات والمكيفات والمضخات تسحب 3-5 أضعاف قدرتها لحظة التشغيل. ارفعه إلى 2-3 إذا كانت لديك محركات كبيرة.',
+  surgeInfo: 'قدرة البدء كمضاعف للقدرة أثناء التشغيل. اتركها 1 للإنارة والتلفاز والمدافئ. الثلاجات والمكيفات والمضخات تسحب 3-5 أضعاف لحظة التشغيل.',
   resetDefaults: 'إعادة الإعدادات الافتراضية',
   moreInfo: 'معلومات إضافية',
 
@@ -142,6 +162,26 @@ const ar: Strings = {
   delete: 'حذف',
   deleteAppliance: 'حذف الجهاز',
   language: 'اللغة',
+  chooseAppliance: 'إضافة جهاز',
+  day: 'النهار',
+  night: 'الليل',
+  deleteAll: 'حذف كل الأجهزة',
+  deleteAllConfirm: (n) => `حذف كل الأجهزة (${n})؟ لا يمكن التراجع عن ذلك.`,
+  other: 'أخرى',
+  otherHint: 'سمّه بنفسك',
+  surgeShort: 'تيار البدء',
+  presetNames: {
+    fridge: 'ثلاجة',
+    ac: 'مكيف هواء',
+    tv: 'تلفاز',
+    light: 'مصباح LED',
+    washer: 'غسالة',
+    pump: 'مضخة ماء',
+    fan: 'مروحة',
+    heater: 'مدفأة كهربائية',
+    laptop: 'حاسوب محمول',
+    microwave: 'مايكروويف',
+  },
 }
 
 const ckb: Strings = {
@@ -182,7 +222,7 @@ const ckb: Strings = {
   margin: 'پەراوێز (×)',
   marginInfo: 'جێگەی زیادە تا ئینڤێرتەرەکە هەرگیز لە سنووری خۆیدا کار نەکات. 1.25 واتە 25% گەورەتر لە کۆی ئامێرەکانت.',
   surge: 'هێزی دەستپێکردن (×)',
-  surgeInfo: 'سەلاجە، سپلیت و پەمپ لە کاتی دەستپێکردندا 3-5 هێندەی توانای خۆیان ڕادەکێشن. ئەگەر مەکینەی گەورەت هەیە بیکە بە 2-3.',
+  surgeInfo: 'توانای دەستپێکردن وەک چەند هێندەی توانای کارکردن. بۆ گڵۆپ، تەلەفزیۆن و هیتەر بیهێڵەرەوە 1. سەلاجە، سپلیت و پەمپ لە دەستپێکردندا 3-5 هێندە ڕادەکێشن.',
   resetDefaults: 'گەڕاندنەوە بۆ بنەڕەت',
   moreInfo: 'زانیاری زیاتر',
 
@@ -202,6 +242,26 @@ const ckb: Strings = {
   delete: 'سڕینەوە',
   deleteAppliance: 'سڕینەوەی ئامێر',
   language: 'زمان',
+  chooseAppliance: 'زیادکردنی ئامێر',
+  day: 'ڕۆژ',
+  night: 'شەو',
+  deleteAll: 'سڕینەوەی هەموو ئامێرەکان',
+  deleteAllConfirm: (n) => `هەموو ئامێرەکان (${n}) بسڕدرێنەوە؟ ناگەڕێتەوە.`,
+  other: 'تر',
+  otherHint: 'خۆت ناوی لێبنێ',
+  surgeShort: 'هێزی دەستپێکردن',
+  presetNames: {
+    fridge: 'سەلاجە',
+    ac: 'سپلیت',
+    tv: 'تەلەفزیۆن',
+    light: 'گڵۆپی LED',
+    washer: 'جلشۆر',
+    pump: 'پەمپی ئاو',
+    fan: 'پانکە',
+    heater: 'هیتەری کارەبا',
+    laptop: 'لاپتۆپ',
+    microwave: 'مایکرۆوەیڤ',
+  },
 }
 
 const STRINGS: Record<Language, Strings> = { en, ar, ckb }

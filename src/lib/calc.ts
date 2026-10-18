@@ -1,9 +1,15 @@
+import type { ApplianceIcon } from '@/lib/presets'
+
 // One usage window in clock hours. `to` may pass 24 when it runs past midnight (26 = 2am next day).
 export interface Appliance {
   id: string
   name: string
   watts: number
   qty: number
+  /** Which icon the card shows (from the preset it was created from). Missing on older saves. */
+  icon?: ApplianceIcon
+  /** Start-up power as a multiple of running watts (1 = none, fridges/ACs ~3-5). */
+  surge: number
   from: number
   to: number
 }
@@ -48,7 +54,8 @@ export type LegacyAppliance = Partial<Appliance> & {
 // Older saves used separate day/night hours or ranges; fold them into one window.
 export function migrateAppliance(a: LegacyAppliance): Appliance {
   const { hoursDay, hoursNight, dayFrom, dayTo, nightFrom, nightTo, ...rest } = a
-  if (a.from != null && a.to != null) return { ...rest, from: a.from, to: a.to }
+  const surge = a.surge ?? 1
+  if (a.from != null && a.to != null) return { ...rest, surge, from: a.from, to: a.to }
   let d0 = dayFrom ?? 8
   let d1 = dayTo ?? 8 + (hoursDay ?? 0)
   const n0 = nightFrom ?? 18
@@ -56,7 +63,7 @@ export function migrateAppliance(a: LegacyAppliance): Appliance {
   if (d1 <= d0) [d0, d1] = [n0, n1]
   else if (n1 > n0 && n0 <= d1) d1 = Math.max(d1, n1)
   else if (n1 - n0 > d1 - d0) [d0, d1] = [n0, n1]
-  return { ...rest, from: d0, to: d1 }
+  return { ...rest, surge, from: d0, to: d1 }
 }
 
 export interface Place {
@@ -79,20 +86,18 @@ export interface Settings {
   inverterEff: number
   derate: number
   safetyMargin: number
-  surgeMultiplier: number
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   sunrise: 6,
   sunset: 18,
   location: null,
-  panelWatts: 250,
+  panelWatts: 640,
   dod: 0.9,
   batteryEff: 0.95,
   inverterEff: 0.92,
   derate: 0.75,
   safetyMargin: 1.25,
-  surgeMultiplier: 1,
 }
 
 // Share of the daylight window that counts as full sun. Sunlight is weak near sunrise/sunset,
@@ -124,14 +129,17 @@ export function calculate(appliances: Appliance[], s: Settings): Results {
   let dayWh = 0
   let nightWh = 0
   let peakW = 0
+  let surgeExtraW = 0
   for (const a of appliances) {
     const w = a.watts * a.qty
     const h = applianceHours(a, s)
     dayWh += w * h.day
     nightWh += w * h.night
     peakW += w
+    // Only one unit starts at a time, so the worst case is the biggest single start-up spike.
+    surgeExtraW = Math.max(surgeExtraW, a.watts * Math.max(0, a.surge - 1))
   }
-  const inverterKw = (peakW * s.safetyMargin * s.surgeMultiplier) / 1000
+  const inverterKw = ((peakW + surgeExtraW) * s.safetyMargin) / 1000
   const batteryKwh = (nightWh / 1000 / (s.dod * s.batteryEff * s.inverterEff)) * 1.1
   // Solar covers the daytime load plus recharging what the battery supplies at night.
   const dailyNeedKwh =

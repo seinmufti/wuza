@@ -10,9 +10,9 @@ export function InfoTip({ text }: { text: string }) {
         openOnHover
         delay={100}
         aria-label={useI18n().t.moreInfo}
-        className="inline-flex size-4 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+        className="inline-flex size-5 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
       >
-        <Info className="size-3.5" />
+        <Info className="size-4" />
       </PopoverTrigger>
       <PopoverContent side="top" className="w-56 text-sm leading-snug">
         {text}

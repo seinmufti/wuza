@@ -4,6 +4,7 @@ import { Slider } from '@/components/ui/slider'
 import { DEFAULT_SETTINGS, peakSunHours, sunFactor, type Settings } from '@/lib/calc'
 import { useI18n } from '@/lib/i18n'
 import { TickLabel } from '@/components/TickLabel'
+import { Collapse } from '@/components/Collapse'
 import { cn } from '@/lib/utils'
 import { fetchSunData, searchPlaces, type PlaceResult } from '@/lib/solar'
 
@@ -85,10 +86,10 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
   const resetButton = timesChanged && (
     <button
       disabled={busy}
-      className="flex items-center gap-1 rounded-full bg-black/10 px-2 py-1 hover:bg-black/15 disabled:opacity-50"
+      className="flex items-center gap-1 rounded-full bg-black/10 px-3 py-1.5 hover:bg-black/15 disabled:opacity-50"
       onClick={resetTimes}
     >
-      {busy ? <Loader2 className="size-3 animate-spin" /> : <RotateCcw className="size-3" />} {t.resetTimes}
+      {busy ? <Loader2 className="size-4 animate-spin" /> : <RotateCcw className="size-4" />} {t.resetTimes}
     </button>
   )
 
@@ -105,9 +106,9 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border bg-card">
-      <button className="flex w-full items-center gap-2 p-3 text-start text-base" onClick={() => setOpen(!open)}>
-        <Sun className="size-4 text-amber-500" />
+    <section data-collapse-root className="overflow-hidden rounded-2xl border bg-card">
+      <button className="flex w-full items-center gap-2.5 p-4 text-start text-base" onClick={() => setOpen(!open)}>
+        <Sun className="size-5 text-amber-500" />
         <span className="flex-1 font-medium">{t.locationDaylight}</span>
         <span className="truncate text-sm text-muted-foreground">
           {settings.location ? `${settings.location.name} · ` : ''}
@@ -115,14 +116,14 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
         </span>
         <ChevronDown className={cn('size-4 shrink-0 transition-transform', open && 'rotate-180')} />
       </button>
-      {open && (
-        <div className="animate-in fade-in-0 duration-150">
+      <Collapse open={open}>
+        <div>
           <div className="border-t p-3">
       <div className="mb-3 flex flex-col gap-2 text-sm">
         {settings.location ? (
           <div className="flex min-w-0 items-center gap-2">
-            <span className="flex w-fit min-w-0 items-center gap-1 rounded-full bg-black/10 py-1 ps-2 pe-1">
-            <MapPin className="size-3 shrink-0 text-amber-500" />
+            <span className="flex w-fit min-w-0 items-center gap-1 rounded-full bg-black/10 py-1.5 ps-3 pe-1.5">
+            <MapPin className="size-4 shrink-0 text-amber-500" />
             <span className="truncate">{settings.location.name}</span>
             <button
               aria-label={t.clearLocation}
@@ -136,7 +137,7 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
                 })
               }
             >
-              <X className="size-3" />
+              <X className="size-4" />
             </button>
           </span>
             {resetButton}
@@ -144,10 +145,10 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
         ) : (
           <div className="flex min-w-0 items-center gap-2">
             <button
-              className="flex w-fit items-center gap-1 rounded-full bg-black/10 px-2 py-1 hover:bg-black/15"
+              className="flex w-fit items-center gap-1 rounded-full bg-black/10 px-3 py-1.5 hover:bg-black/15"
               onClick={() => setSearching(!searching)}
             >
-              <MapPin className="size-3 text-amber-500" /> {t.setLocation}
+              <MapPin className="size-4 text-amber-500" /> {t.setLocation}
             </button>
             {resetButton}
           </div>
@@ -180,20 +181,20 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t.cityOrTown}
-              className="h-9 min-w-0 flex-1 rounded-lg border border-black/15 bg-white/50 px-3 text-base outline-none placeholder:text-neutral-900/40 focus:border-neutral-900"
+              className="h-11 min-w-0 flex-1 rounded-lg border border-black/15 bg-white/50 px-3 text-base outline-none placeholder:text-neutral-900/40 focus:border-neutral-900"
             />
             <button
               type="button"
               aria-label={t.useMyLocation}
               onClick={locate}
-              className="flex size-9 items-center justify-center rounded-lg border border-black/15 hover:bg-black/10"
+              className="flex size-11 items-center justify-center rounded-lg border border-black/15 hover:bg-black/10"
             >
               <LocateFixed className="size-4" />
             </button>
           </form>
           {busy && (
             <div className="flex items-center gap-2 text-sm text-neutral-900/60">
-              <Loader2 className="size-3 animate-spin" /> {t.loading}
+              <Loader2 className="size-4 animate-spin" /> {t.loading}
             </div>
           )}
           {error && <div className="text-sm text-red-700">{error}</div>}
@@ -202,7 +203,7 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
               key={`${r.lat},${r.lon}`}
               disabled={busy}
               onClick={() => pick(r.name, r.lat, r.lon)}
-              className="block w-full truncate rounded-lg px-2 py-1.5 text-start text-base hover:bg-black/10"
+              className="block w-full truncate rounded-lg px-3 py-2.5 text-start text-base hover:bg-black/10"
             >
               {r.label}
             </button>
@@ -212,13 +213,13 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
 
       <div dir="ltr" className="mb-3 flex items-center justify-between text-base font-semibold tabular-nums">
         <span className="flex items-center gap-1">
-          <Sunrise className="size-4 text-amber-500" /> {clock(settings.sunrise, true)}
+          <Sunrise className="size-5 text-amber-500" /> {clock(settings.sunrise, true)}
         </span>
         <span className="text-sm font-normal text-neutral-900/60">
           {t.ofDaylight(hours(settings.sunset - settings.sunrise))}
         </span>
         <span className="flex items-center gap-1">
-          {clock(settings.sunset, true)} <Sunset className="size-4 text-amber-500" />
+          {clock(settings.sunset, true)} <Sunset className="size-5 text-amber-500" />
         </span>
       </div>
       <Slider
@@ -227,7 +228,8 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
         max={24}
         step={5 / 60}
         minStepsBetweenValues={12}
-        className="[&_[data-slot=slider-range]]:bg-neutral-900 [&_[data-slot=slider-thumb]]:size-4 [&_[data-slot=slider-thumb]]:border-neutral-900 [&_[data-slot=slider-track]]:bg-black/15"
+        thumbCollisionBehavior="none"
+        className="[&_[data-slot=slider-range]]:bg-neutral-900 [&_[data-slot=slider-thumb]]:size-5 [&_[data-slot=slider-thumb]]:border-neutral-900 [&_[data-slot=slider-track]]:h-1.5! [&_[data-slot=slider-track]]:bg-black/15"
         value={[settings.sunrise, settings.sunset]}
         onValueChange={(v) => {
           if (Array.isArray(v)) onChange({ ...settings, sunrise: v[0], sunset: v[1] })
@@ -240,7 +242,7 @@ export function Sunlight({ settings, onChange }: { settings: Settings; onChange:
       </div>
           </div>
         </div>
-      )}
+      </Collapse>
     </section>
   )
 }

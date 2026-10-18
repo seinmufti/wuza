@@ -141,3 +141,8 @@
 @media (prefers-reduced-motion: reduce) {
   .bar-sweep { animation: none; display: none; }
 }
+
+/* The page scrolls; stop the browser shifting it while dropdowns animate. */
+html {
+  overflow-anchor: none;
+}

@@ -7,10 +7,15 @@ export function NumberInput({
   value,
   onChange,
   allowZero = false,
+  className,
+  integer = false,
 }: {
   value: number
   onChange: (n: number) => void
   allowZero?: boolean
+  className?: string
+  /** Whole numbers only: shows the numeric keypad (no decimal point) on phones. */
+  integer?: boolean
 }) {
   const [text, setText] = useState(String(value))
   const [focused, setFocused] = useState(false)
@@ -18,8 +23,9 @@ export function NumberInput({
 
   return (
     <Input
+      className={className}
       type="text"
-      inputMode="decimal"
+      inputMode={integer ? 'numeric' : 'decimal'}
       value={focused ? text : String(value)}
       onFocus={() => {
         setText(String(value))
