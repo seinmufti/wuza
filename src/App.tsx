@@ -77,7 +77,16 @@ export default function App() {
                 switchTab('home')
               }}
               onLoadRoi={(s) => {
-                setRoi({ ...DEFAULT_ROI, ...s.roi })
+                // Only prices come from the setup; sizes and usage follow the current Home project.
+                setRoi({
+                  ...DEFAULT_ROI,
+                  ...s.roi,
+                  panelWatts: null,
+                  panelCount: null,
+                  inverterKw: null,
+                  batteryKwh: null,
+                  monthKwh: null,
+                })
                 switchTab('roi')
               }}
             />

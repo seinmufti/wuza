@@ -41,7 +41,7 @@ export const PRESET_ROI: SavedRoi[] = [
       panelWatts: null,
       panelCount: null,
       panelPrice: 500,
-      inverterKw: 1.5,
+      inverterKw: null,
       inverterPrice: 75,
       batteryKwh: null,
       batteryPrice: 300,
