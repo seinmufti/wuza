@@ -30,16 +30,16 @@ export function SettingsPanel({ value, onChange }: { value: Settings; onChange: 
         <div>
           <div className="grid grid-cols-3 gap-2 border-t p-3">
             <Column icon={<Sun className="size-4 text-amber-500" />} title={t.solar}>
-              <Field label={t.panelW} info={t.panelWInfo} value={value.panelWatts} onChange={(v) => num('panelWatts', v)} />
-              <Field label={t.derate} info={t.derateInfo} value={Math.round(value.derate * 100)} onChange={(v) => num('derate', v, 100)} />
+              <Field label={t.panelW} info={t.panelWInfo} value={value.panelWatts} defaultValue={DEFAULT_SETTINGS.panelWatts} onChange={(v) => num('panelWatts', v)} />
+              <Field label={t.derate} info={t.derateInfo} value={Math.round(value.derate * 100)} defaultValue={Math.round(DEFAULT_SETTINGS.derate * 100)} onChange={(v) => num('derate', v, 100)} />
             </Column>
             <Column icon={<Battery className="size-4 text-emerald-600" />} title={t.battery}>
-              <Field label={t.usable} info={t.usableInfo} value={Math.round(value.dod * 100)} onChange={(v) => num('dod', v, 100)} />
-              <Field label={t.efficiency} info={t.batteryEffInfo} value={Math.round(value.batteryEff * 100)} onChange={(v) => num('batteryEff', v, 100)} />
+              <Field label={t.usable} info={t.usableInfo} value={Math.round(value.dod * 100)} defaultValue={Math.round(DEFAULT_SETTINGS.dod * 100)} onChange={(v) => num('dod', v, 100)} />
+              <Field label={t.efficiency} info={t.batteryEffInfo} value={Math.round(value.batteryEff * 100)} defaultValue={Math.round(DEFAULT_SETTINGS.batteryEff * 100)} onChange={(v) => num('batteryEff', v, 100)} />
             </Column>
             <Column icon={<Zap className="size-4 text-indigo-500" />} title={t.inverter}>
-              <Field label={t.efficiency} info={t.inverterEffInfo} value={Math.round(value.inverterEff * 100)} onChange={(v) => num('inverterEff', v, 100)} />
-              <Field label={t.margin} info={t.marginInfo} value={value.safetyMargin} onChange={(v) => num('safetyMargin', v)} />
+              <Field label={t.efficiency} info={t.inverterEffInfo} value={Math.round(value.inverterEff * 100)} defaultValue={Math.round(DEFAULT_SETTINGS.inverterEff * 100)} onChange={(v) => num('inverterEff', v, 100)} />
+              <Field label={t.margin} info={t.marginInfo} value={value.safetyMargin} defaultValue={DEFAULT_SETTINGS.safetyMargin} onChange={(v) => num('safetyMargin', v)} />
             </Column>
             <Button
               variant="outline"
@@ -71,20 +71,28 @@ function Field({
   label,
   info,
   value,
+  defaultValue,
   onChange,
 }: {
   label: string
   info: string
   value: number
+  /** Shown dark grey when the value differs from this, so changed settings stand out. */
+  defaultValue: number
   onChange: (v: string) => void
 }) {
+  const changed = value !== defaultValue
   return (
     <div className="space-y-1">
       <div className="flex min-h-10 items-end gap-1">
         <Label className="text-sm leading-tight font-normal text-muted-foreground">{label}</Label>
         <InfoTip text={info} />
       </div>
-      <NumberInput value={value} onChange={(n) => onChange(String(n))} />
+      <NumberInput
+        className={cn(changed && 'border-neutral-700 bg-neutral-700 text-white')}
+        value={value}
+        onChange={(n) => onChange(String(n))}
+      />
     </div>
   )
 }
