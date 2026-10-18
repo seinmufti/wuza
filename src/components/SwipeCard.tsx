@@ -1,18 +1,29 @@
 import { useRef, useState, type ReactNode } from 'react'
-import { Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { useI18n } from '@/lib/i18n'
 
-const REVEAL = 88 // width of the Delete button behind the card
+const BUTTON = 88 // width of each action button behind the card
 
-// Swipe left to reveal Delete; swipe most of the way to delete at once.
+// Swipe left to reveal Delete (and Edit when given); swipe most of the way to delete at once.
 // Gestures starting inside [data-no-swipe] (e.g. sliders) are ignored, and vertical drags scroll.
-export function SwipeCard({ onDelete, label, children }: { onDelete: () => void; label?: string; children: ReactNode }) {
+export function SwipeCard({
+  onDelete,
+  onEdit,
+  label,
+  children,
+}: {
+  onDelete: () => void
+  onEdit?: () => void
+  label?: string
+  children: ReactNode
+}) {
   const [offset, setOffset] = useState(0)
   const [dragging, setDragging] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const gesture = useRef<{ x: number; y: number; base: number; mode: 'none' | 'x' | 'y' } | null>(null)
   const swallowClick = useRef(false)
   const { t } = useI18n()
+  const REVEAL = onEdit ? BUTTON * 2 : BUTTON
 
   const remove = () => {
     setOffset(-(ref.current?.offsetWidth ?? 400))
@@ -22,10 +33,22 @@ export function SwipeCard({ onDelete, label, children }: { onDelete: () => void;
   return (
     <div ref={ref} className="relative touch-pan-y overflow-hidden rounded-2xl">
       <div dir="ltr" className="absolute inset-0 flex justify-end rounded-2xl bg-destructive">
+        {onEdit && (
+          <button
+            className="flex items-center justify-center gap-1 bg-neutral-700 text-sm font-medium text-white"
+            style={{ width: BUTTON }}
+            onClick={() => {
+              setOffset(0)
+              onEdit()
+            }}
+          >
+            <Pencil className="size-4" /> {t.edit}
+          </button>
+        )}
         <button
           aria-label={label ?? t.deleteAppliance}
           className="flex items-center justify-center gap-1 text-sm font-medium text-white"
-          style={{ width: REVEAL }}
+          style={{ width: BUTTON }}
           onClick={remove}
         >
           <Trash2 className="size-4" /> {t.delete}

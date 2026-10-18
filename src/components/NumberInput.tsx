@@ -11,6 +11,8 @@ export function NumberInput({
   integer = false,
   placeholder,
   onClear,
+  thousands = false,
+  "aria-label": ariaLabel,
 }: {
   value: number
   onChange: (n: number) => void
@@ -22,14 +24,19 @@ export function NumberInput({
   placeholder?: string
   /** Called when the field is left empty, instead of restoring the last value. */
   onClear?: () => void
+  /** Shows comma thousands separators (168,650), also while typing. */
+  thousands?: boolean
+  "aria-label"?: string
 }) {
   const [text, setText] = useState(String(value))
   const [focused, setFocused] = useState(false)
-  const shown = (n: number) => (placeholder !== undefined && n === 0 ? '' : String(n))
+  const format = (n: number) => (thousands ? n.toLocaleString('en-US', { maximumFractionDigits: 20 }) : String(n))
+  const shown = (n: number) => (placeholder !== undefined && n === 0 ? '' : format(n))
   const valid = (n: number) => Number.isFinite(n) && (allowZero ? n >= 0 : n > 0)
 
   return (
     <Input
+      aria-label={ariaLabel}
       className={className}
       type="text"
       inputMode={integer ? 'numeric' : 'decimal'}
@@ -40,9 +47,12 @@ export function NumberInput({
         setFocused(true)
       }}
       onChange={(e) => {
-        setText(e.target.value)
-        const n = Number(e.target.value)
-        if (e.target.value.trim() !== '' && valid(n)) onChange(n)
+        const raw = thousands ? e.target.value.replace(/,/g, '') : e.target.value
+        const n = Number(raw)
+        const ok = raw.trim() !== '' && valid(n)
+        // Re-insert the commas as digits are typed (only for plain whole numbers).
+        setText(thousands && ok && /^\d+$/.test(raw) ? format(n) : e.target.value)
+        if (ok) onChange(n)
       }}
       onBlur={() => {
         setFocused(false)
