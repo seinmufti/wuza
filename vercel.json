@@ -2,6 +2,8 @@
   "rewrites": [
     { "source": "/wuza", "destination": "/index.html" },
     { "source": "/wuza/", "destination": "/index.html" },
+    { "source": "/wuza/reverse", "destination": "/index.html" },
+    { "source": "/wuza/reverse/", "destination": "/index.html" },
     { "source": "/wuza/:path*", "destination": "/:path*" }
   ]
 }

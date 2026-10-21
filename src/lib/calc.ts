@@ -89,6 +89,10 @@ export interface Settings {
   inverterEff: number
   derate: number
   safetyMargin: number
+  /** Panel watts the inverter accepts per watt of its rating (its "Max PV input" ÷ rated power). */
+  pvRatio: number
+  /** Mains voltage for turning amps into watts (the /reverse page). */
+  volts: number
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -103,6 +107,8 @@ export const DEFAULT_SETTINGS: Settings = {
   inverterEff: 0.92,
   derate: 0.75,
   safetyMargin: 1.25,
+  pvRatio: 1.3,
+  volts: 220,
 }
 
 // Share of the daylight window that counts as full sun. Sunlight is weak near sunrise/sunset,
@@ -123,7 +129,12 @@ export interface Results {
   dayWh: number
   nightWh: number
   peakW: number
+  /** The bigger of the two sizes below. */
   inverterKw: number
+  /** Big enough for the appliances (plus start-up surge and margin). */
+  inverterLoadKw: number
+  /** Big enough to take in all the panels' watts. */
+  inverterSolarKw: number
   batteryKwh: number
   solarKw: number
   panelCount: number
@@ -146,15 +157,31 @@ export function calculate(appliances: Appliance[], s: Settings): Results {
     // Only one unit starts at a time, so the worst case is the biggest single start-up spike.
     surgeExtraW = Math.max(surgeExtraW, a.watts * Math.max(0, a.surge - 1))
   }
-  const inverterKw = ((peakW + surgeExtraW) * s.safetyMargin) / 1000
+  return sizeSystem(dayWh, nightWh, peakW, surgeExtraW, s)
+}
+
+/** Sizes the inverter, battery and panels for a day/night energy use and peak load. */
+export function sizeSystem(
+  dayWh: number,
+  nightWh: number,
+  peakW: number,
+  surgeExtraW: number,
+  s: Settings,
+  /** Panels give their full rated watts every daylight hour (no weak-sun factor, no derate). */
+  fullSun = false,
+): Results {
+  const inverterLoadKw = ((peakW + surgeExtraW) * s.safetyMargin) / 1000
   const batteryKwh = (nightWh / 1000 / (s.dod * s.batteryEff * s.inverterEff)) * 1.1
   // Solar covers the daytime load plus recharging what the battery supplies at night.
   const dailyNeedKwh =
     (dayWh / s.inverterEff + nightWh / (s.batteryEff * s.batteryEff * s.inverterEff)) / 1000
-  const psh = peakSunHours(s)
-  const solarKw = psh > 0 ? dailyNeedKwh / (psh * s.derate) : 0
+  const psh = fullSun ? Math.max(0, s.sunset - s.sunrise) : peakSunHours(s)
+  const solarKw = psh > 0 ? dailyNeedKwh / (psh * (fullSun ? 1 : s.derate)) : 0
   const panelCount = solarKw > 0 ? Math.ceil((solarKw * 1000) / s.panelWatts) : 0
+  // A hybrid inverter also takes in the panels, so it must handle the installed panel watts too.
+  const inverterSolarKw = (panelCount * s.panelWatts) / 1000 / s.pvRatio
+  const inverterKw = Math.max(inverterLoadKw, inverterSolarKw)
   const systemVolts = inverterKw <= 1.5 ? 12 : inverterKw <= 3 ? 24 : 48
   const panelAreaM2 = panelCount * s.panelLength * s.panelWidth
-  return { dayWh, nightWh, peakW, inverterKw, batteryKwh, solarKw, panelCount, panelAreaM2, systemVolts }
+  return { dayWh, nightWh, peakW, inverterKw, inverterLoadKw, inverterSolarKw, batteryKwh, solarKw, panelCount, panelAreaM2, systemVolts }
 }

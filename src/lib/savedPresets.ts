@@ -28,6 +28,8 @@ export const PRESET_HOME: SavedHome[] = [
       inverterEff: 0.92,
       derate: 0.75,
       safetyMargin: 1.25,
+      pvRatio: 1.3,
+      volts: 220,
     },
   },
 ]

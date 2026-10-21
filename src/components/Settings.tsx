@@ -9,7 +9,16 @@ import { useI18n } from '@/lib/i18n'
 import { Collapse } from '@/components/Collapse'
 import { cn } from '@/lib/utils'
 
-export function SettingsPanel({ value, onChange }: { value: Settings; onChange: (s: Settings) => void }) {
+export function SettingsPanel({
+  value,
+  onChange,
+  amps = false,
+}: {
+  value: Settings
+  onChange: (s: Settings) => void
+  /** Also show the amps-to-watts voltage (the /reverse page). */
+  amps?: boolean
+}) {
   const [open, setOpen] = useState(false)
   const { t } = useI18n()
   const num = (k: keyof Settings, v: string, scale = 1) => {
@@ -42,7 +51,19 @@ export function SettingsPanel({ value, onChange }: { value: Settings; onChange: 
             <Column icon={<Zap className="size-4 text-indigo-500" />} title={t.inverter}>
               <Field label={t.efficiency} info={t.inverterEffInfo} value={Math.round(value.inverterEff * 100)} defaultValue={Math.round(DEFAULT_SETTINGS.inverterEff * 100)} onChange={(v) => num('inverterEff', v, 100)} />
               <Field label={t.margin} info={t.marginInfo} value={value.safetyMargin} defaultValue={DEFAULT_SETTINGS.safetyMargin} onChange={(v) => num('safetyMargin', v)} />
+              <Field label={t.pvRatio} info={t.pvRatioInfo} value={value.pvRatio} defaultValue={DEFAULT_SETTINGS.pvRatio} onChange={(v) => num('pvRatio', v)} />
             </Column>
+            {amps && (
+              <div className="col-span-3 flex items-end gap-3 rounded-xl bg-muted/50 p-2.5">
+                <div className="flex-1 space-y-1">
+                  <div className="text-base font-semibold">{t.ampsToWatts}</div>
+                  <div className="text-sm text-muted-foreground">{t.voltsHint}</div>
+                </div>
+                <div className="w-28">
+                  <Field label={t.voltage} info={t.voltsInfo} value={value.volts} defaultValue={DEFAULT_SETTINGS.volts} onChange={(v) => num('volts', v)} />
+                </div>
+              </div>
+            )}
             <Button
               variant="outline"
               className="col-span-3"

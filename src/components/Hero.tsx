@@ -97,7 +97,18 @@ export function Hero({ r, usage }: { r: Results; usage: { day: number; night: nu
             </>
           }
         />
-        <Stat className="bg-neutral-200" bodyClassName="bg-neutral-200/20" icon={<Zap className="size-3.5" />} label={t.inverter} value={r.inverterKw} unit="kW" sub="" />
+        <Stat className="bg-neutral-200" bodyClassName="bg-neutral-200/20" icon={<Zap className="size-3.5" />} label={t.inverter} value={r.inverterKw} unit="kW"
+          sub={
+            <>
+              <span className="block">
+                {t.invLoad} <bdi dir="ltr">{r.inverterLoadKw.toFixed(2)}</bdi>
+              </span>
+              <span className="block">
+                {t.invPanels} <bdi dir="ltr">{r.inverterSolarKw.toFixed(2)}</bdi>
+              </span>
+            </>
+          }
+        />
         <Stat className="bg-indigo-400" bodyClassName="bg-indigo-400/20" icon={<Battery className="size-3.5" />} label={t.battery} value={r.batteryKwh} unit="kWh" sub="" />
       </div>
 
